@@ -19,6 +19,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 
 public class AmazonKinesisSinkTask extends SinkTask {
 
@@ -101,7 +102,7 @@ public class AmazonKinesisSinkTask extends SinkTask {
 				f = kinesisProducer.addUserRecord(streamName, partitionKey ,
 						DataUtility.parseValue(sinkRecord.valueSchema(), sinkRecord.value()));
 
-			Futures.addCallback(f, callback);
+			Futures.addCallback(f, callback,MoreExecutors.directExecutor());
 
 		}
 	}
