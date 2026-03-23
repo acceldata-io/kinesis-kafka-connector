@@ -40,6 +40,17 @@
 			<groupId>com.amazonaws</groupId>
 			<artifactId>amazon-kinesis-producer</artifactId>
 			<version>0.12.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>software.amazon.ion</groupId>
+					<artifactId>ion-java</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.amazon.ion</groupId>
+			<artifactId>ion-java</artifactId>
+			<version>1.10.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
