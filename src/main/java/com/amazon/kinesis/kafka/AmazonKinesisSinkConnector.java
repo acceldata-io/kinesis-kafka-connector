@@ -33,6 +33,31 @@ public class AmazonKinesisSinkConnector extends SinkConnector {
 
 	public static final String USE_PARTITION_AS_HASH_KEY = "usePartitionAsHashKey";
 
+	/** When true, use SAML (AssumeRoleWithSAML) and KMS decryption for the proxy password. */
+	public static final String SAML_AUTHENTICATION_ENABLED = "samlAuthenticationEnabled";
+
+	/** Path to a properties file with decryption.url, aws.proxy.host, aws.proxy.port, aws.auth.url */
+	public static final String EXTERNAL_CONFIG_FILE = "externalConfigFile";
+
+	public static final String PROFILE = "profile";
+
+	public static final String ENDPOINT = "kinesisEndPoint";
+
+	public static final String USERNAME = "username";
+
+	public static final String ROLEARN = "rolearn";
+
+	public static final String SYS_SEQ = "sysSeq";
+
+	public static final String PROJ_SEQ = "projSeq";
+
+	public static final String CRED_ID = "credId";
+
+	public static final String INT_PROXY = "intProxy";
+
+	/** IAM SAML provider resource name segment (e.g. SAML_ADFS3 for arn:...:saml-provider/SAML_ADFS3). */
+	public static final String SAML_PROVIDER_NAME = "samlProviderName";
+
 	private static final String VERSION = "0.11.0.0";
 
 	private String region;
@@ -57,6 +82,28 @@ public class AmazonKinesisSinkConnector extends SinkConnector {
 
 	private String usePartitionAsHashKey;
 
+	private String samlAuthenticationEnabled;
+
+	private String externalConfigFile;
+
+	private String profile;
+
+	private String kinesisEndPoint;
+
+	private String username;
+
+	private String rolearn;
+
+	private String sysSeq;
+
+	private String projSeq;
+
+	private String credId;
+
+	private String intProxy;
+
+	private String samlProviderName;
+
 	@Override
 	public void start(Map<String, String> props) {
 		region = props.get(REGION);
@@ -70,6 +117,17 @@ public class AmazonKinesisSinkConnector extends SinkConnector {
 		metricsNameSpace = props.get(METRICS_NAMESPACE);
 		aggregration = props.get(AGGREGRATION_ENABLED);
 		usePartitionAsHashKey = props.get(USE_PARTITION_AS_HASH_KEY);
+		samlAuthenticationEnabled = props.get(SAML_AUTHENTICATION_ENABLED);
+		externalConfigFile = props.get(EXTERNAL_CONFIG_FILE);
+		profile = props.get(PROFILE);
+		kinesisEndPoint = props.get(ENDPOINT);
+		username = props.get(USERNAME);
+		rolearn = props.get(ROLEARN);
+		sysSeq = props.get(SYS_SEQ);
+		projSeq = props.get(PROJ_SEQ);
+		credId = props.get(CRED_ID);
+		intProxy = props.get(INT_PROXY);
+		samlProviderName = props.get(SAML_PROVIDER_NAME);
 	}
 
 	@Override
@@ -139,6 +197,29 @@ public class AmazonKinesisSinkConnector extends SinkConnector {
 				config.put(USE_PARTITION_AS_HASH_KEY, usePartitionAsHashKey);
 			else
 				config.put(USE_PARTITION_AS_HASH_KEY, "false");
+
+			if (samlAuthenticationEnabled != null)
+				config.put(SAML_AUTHENTICATION_ENABLED, samlAuthenticationEnabled);
+			if (externalConfigFile != null)
+				config.put(EXTERNAL_CONFIG_FILE, externalConfigFile);
+			if (profile != null)
+				config.put(PROFILE, profile);
+			if (kinesisEndPoint != null)
+				config.put(ENDPOINT, kinesisEndPoint);
+			if (username != null)
+				config.put(USERNAME, username);
+			if (rolearn != null)
+				config.put(ROLEARN, rolearn);
+			if (sysSeq != null)
+				config.put(SYS_SEQ, sysSeq);
+			if (projSeq != null)
+				config.put(PROJ_SEQ, projSeq);
+			if (credId != null)
+				config.put(CRED_ID, credId);
+			if (intProxy != null)
+				config.put(INT_PROXY, intProxy);
+			if (samlProviderName != null)
+				config.put(SAML_PROVIDER_NAME, samlProviderName);
 
 			configs.add(config);
 
