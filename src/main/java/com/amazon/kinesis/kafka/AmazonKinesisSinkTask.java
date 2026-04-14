@@ -197,8 +197,7 @@ public class AmazonKinesisSinkTask extends SinkTask {
 
 		usePartitionAsHashKey = Boolean.parseBoolean(props.get(AmazonKinesisSinkConnector.USE_PARTITION_AS_HASH_KEY));
 
-		samlAuthenticationEnabled = Boolean
-				.parseBoolean(props.get(AmazonKinesisSinkConnector.SAML_AUTHENTICATION_ENABLED));
+		samlAuthenticationEnabled = resolveSamlAuthenticationEnabled(props);
 
 		if (samlAuthenticationEnabled) {
 			loadSamlConfiguration(props);
@@ -208,8 +207,53 @@ public class AmazonKinesisSinkTask extends SinkTask {
 
 	}
 
+	/**
+	 * Explicit {@code samlAuthenticationEnabled} in connector config wins. If omitted, SAML is enabled
+	 * when all legacy SAML connector fields are set (same as the reference branch: profile, username,
+	 * rolearn, kinesisEndPoint, sysSeq, projSeq, credId, intProxy).
+	 */
+	private static boolean resolveSamlAuthenticationEnabled(Map<String, String> props) {
+		String flag = props.get(AmazonKinesisSinkConnector.SAML_AUTHENTICATION_ENABLED);
+		if (flag != null) {
+			return Boolean.parseBoolean(flag);
+		}
+		return hasImplicitSamlConnectorConfig(props);
+	}
+
+	private static boolean hasImplicitSamlConnectorConfig(Map<String, String> props) {
+		return isSet(props.get(AmazonKinesisSinkConnector.PROFILE))
+				&& isSet(props.get(AmazonKinesisSinkConnector.USERNAME))
+				&& isSet(props.get(AmazonKinesisSinkConnector.ROLEARN))
+				&& isSet(props.get(AmazonKinesisSinkConnector.ENDPOINT))
+				&& isSet(props.get(AmazonKinesisSinkConnector.SYS_SEQ))
+				&& isSet(props.get(AmazonKinesisSinkConnector.PROJ_SEQ))
+				&& isSet(props.get(AmazonKinesisSinkConnector.CRED_ID))
+				&& isSet(props.get(AmazonKinesisSinkConnector.INT_PROXY));
+	}
+
+	private static boolean isSet(String v) {
+		return v != null && !v.trim().isEmpty();
+	}
+
+	/**
+	 * Connector property {@code externalConfigFile}, else env {@code KINESIS_CONNECTOR_EXTERNAL_CONFIG},
+	 * else legacy default path used by the reference SAML branch (same file containing {@code decryption.url},
+	 * {@code aws.proxy.host}, {@code aws.auth.url}, etc.).
+	 */
+	private static String resolveExternalConfigFilePath(Map<String, String> props) {
+		String fromConnector = props.get(AmazonKinesisSinkConnector.EXTERNAL_CONFIG_FILE);
+		if (isSet(fromConnector)) {
+			return fromConnector.trim();
+		}
+		String fromEnv = System.getenv("KINESIS_CONNECTOR_EXTERNAL_CONFIG");
+		if (isSet(fromEnv)) {
+			return fromEnv.trim();
+		}
+		return "/usr/hdf/current/kafkaconnect/Jars/config.properties";
+	}
+
 	private void loadSamlConfiguration(Map<String, String> props) {
-		String configPath = props.get(AmazonKinesisSinkConnector.EXTERNAL_CONFIG_FILE);
+		String configPath = resolveExternalConfigFilePath(props);
 		profile = props.get(AmazonKinesisSinkConnector.PROFILE);
 		kinesisEndPoint = props.get(AmazonKinesisSinkConnector.ENDPOINT);
 		username = props.get(AmazonKinesisSinkConnector.USERNAME);
@@ -221,7 +265,8 @@ public class AmazonKinesisSinkTask extends SinkTask {
 		}
 
 		if (configPath == null || configPath.isEmpty()) {
-			throw new ConnectException("samlAuthenticationEnabled requires " + AmazonKinesisSinkConnector.EXTERNAL_CONFIG_FILE);
+			throw new ConnectException("SAML requires " + AmazonKinesisSinkConnector.EXTERNAL_CONFIG_FILE
+					+ ", or env KINESIS_CONNECTOR_EXTERNAL_CONFIG, or a readable file at the default path");
 		}
 		if (profile == null || kinesisEndPoint == null || username == null || rolearn == null || intProxy == null) {
 			throw new ConnectException(
