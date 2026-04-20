@@ -4,7 +4,7 @@
 
 	<groupId>com.amazonaws</groupId>
 	<artifactId>amazon-kinesis-kafka-connecter</artifactId>
-	<version>0.0.9</version>
+	<version>0.0.8.1</version>
 	<packaging>jar</packaging>
 
 	<name>amazon-kinesis-kafka-connecter</name>
@@ -53,6 +53,11 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-sts</artifactId>
+			<version>1.11.1034</version>
+		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-kinesis</artifactId>
 			<version>1.11.1034</version>
 		</dependency>
 		<!-- Pin Jackson for AWS SDK v1 + shade; must stay &lt; 2.15 (PascalCaseStrategy removal). -->
