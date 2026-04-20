@@ -4,7 +4,7 @@
 
 	<groupId>com.amazonaws</groupId>
 	<artifactId>amazon-kinesis-kafka-connecter</artifactId>
-	<version>0.0.8</version>
+	<version>0.0.9</version>
 	<packaging>jar</packaging>
 
 	<name>amazon-kinesis-kafka-connecter</name>
@@ -12,6 +12,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- AWS SDK v1 expects PropertyNamingStrategy.PascalCaseStrategy; Jackson 2.15+ removed it.
+		     Bundle 2.14.x in the shaded jar so Connect does not pick up Kafka's newer Jackson. -->
+		<jackson.version>2.14.2</jackson.version>
 	</properties>
 
 	<dependencies>
@@ -52,6 +55,27 @@
 			<artifactId>aws-java-sdk-sts</artifactId>
 			<version>1.11.1034</version>
 		</dependency>
+		<!-- Pin Jackson for AWS SDK v1 + shade; must stay &lt; 2.15 (PascalCaseStrategy removal). -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-cbor</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>net.dongliu</groupId>
 			<artifactId>requests</artifactId>
@@ -86,15 +110,10 @@
 						</goals>
 						<configuration>
 							<artifactSet>
-								<!-- Excluding directories that are available in Kafka to avoid version 
-									conflict -->
+								<!-- Excluding Kafka API only. Jackson must be shaded in: the worker ships
+									Jackson 2.15+ which breaks AWS SDK v1 (PascalCaseStrategy). -->
 								<excludes>
 									<exclude>org.apache.kafka:*</exclude>
-									<exclude>com.fasterxml.jackson.annotation:*</exclude>
-									<exclude>com.fasterxml.jackson.core:*</exclude>
-									<exclude>com.fasterxml.jackson.dataformat:*</exclude>
-									<exclude>com.fasterxml.jackson.dataformat:*</exclude>
-									<exclude>jackson*:jackson-databind:jar:</exclude>
 								</excludes>
 							</artifactSet>
 						</configuration>
