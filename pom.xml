@@ -21,6 +21,11 @@
 				<artifactId>aws-java-sdk-s3</artifactId>
 				<version>1.12.261</version>
 			</dependency>
+			<dependency>
+			    <groupId>software.amazon.ion</groupId>
+			    <artifactId>ion-java</artifactId>
+			    <version>1.10.8</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
