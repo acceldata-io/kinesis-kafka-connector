@@ -4,7 +4,7 @@
   <groupId>com.amazonaws</groupId>
   <artifactId>amazon-kinesis-kafka-connecter</artifactId>
   <name>amazon-kinesis-kafka-connecter</name>
-  <version>0.0.8.3.2.3.6-2</version>
+  <version>0.0.8.3.2.3.7-3</version>
   <url>http://maven.apache.org</url>
   <build>
     <plugins>
