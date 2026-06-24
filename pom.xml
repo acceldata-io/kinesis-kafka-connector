@@ -14,6 +14,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Releases</name>
+			<url>https://repo1.acceldata.dev/repository/odp-staging-release/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Snapshot</name>
+			<url>https://repo1.acceldata.dev/repository/odp-staging-snapshot/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -21,12 +34,13 @@
 				<artifactId>aws-java-sdk-s3</artifactId>
 				<version>1.12.261</version>
 			</dependency>
+			<!-- Pin to prevent version-range scanning of every aws-java-sdk-core patch -->
 			<dependency>
-			    <groupId>software.amazon.ion</groupId>
-			    <artifactId>ion-java</artifactId>
-			    <version>1.10.8</version>
+				<groupId>com.amazonaws</groupId>
+				<artifactId>aws-java-sdk-core</artifactId>
+				<version>1.12.261</version>
 			</dependency>
-		</dependencies>
+			</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
