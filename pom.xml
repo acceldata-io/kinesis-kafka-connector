@@ -74,6 +74,10 @@
 					<groupId>software.amazon.ion</groupId>
 					<artifactId>ion-java</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>software.amazon.glue</groupId>
+					<artifactId>schema-registry-serde</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
