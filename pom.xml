@@ -34,12 +34,13 @@
 				<artifactId>aws-java-sdk-s3</artifactId>
 				<version>1.12.261</version>
 			</dependency>
+			<!-- Pin to prevent version-range scanning of every aws-java-sdk-core patch -->
 			<dependency>
-			    <groupId>software.amazon.ion</groupId>
-			    <artifactId>ion-java</artifactId>
-			    <version>1.10.8</version>
+				<groupId>com.amazonaws</groupId>
+				<artifactId>aws-java-sdk-core</artifactId>
+				<version>1.12.261</version>
 			</dependency>
-		</dependencies>
+			</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
